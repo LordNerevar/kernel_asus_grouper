@@ -39,7 +39,6 @@
 #include <linux/skbuff.h>
 #include <linux/regulator/consumer.h>
 #include <linux/smb347-charger.h>
-#include <linux/max17048_battery.h>
 #include <linux/leds.h>
 
 #include <mach/clk.h>
@@ -262,29 +261,7 @@ static struct tegra_i2c_platform_data grouper_i2c5_platform_data = {
 	.arb_recovery = arb_lost_recovery,
 };
 
-struct max17048_battery_model max17048_mdata = {
-	.rcomp          = 170,
-	.soccheck_A     = 252,
-	.soccheck_B     = 254,
-	.bits           = 19,
-	.alert_threshold = 0x00,
-	.one_percent_alerts = 0x40,
-	.alert_on_reset = 0x40,
-	.rcomp_seg      = 0x0800,
-	.hibernate      = 0x3080,
-	.vreset         = 0x9696,
-	.valert         = 0xD4AA,
-	.ocvtest        = 55600,
-};
-
-static struct i2c_board_info grouper_i2c4_max17048_board_info[] = {
-	{
-		I2C_BOARD_INFO("max17048", 0x36),
-		.platform_data = &max17048_mdata,
-	},
-};
-
-static struct i2c_board_info cardhu_i2c4_bq27541_board_info[] = {
+static struct i2c_board_info grouper_i2c4_bq27541_board_info[] = {
 	{
 		I2C_BOARD_INFO("bq27541-battery", 0x55),
 	}
@@ -298,11 +275,6 @@ static struct i2c_board_info grouper_i2c4_smb347_board_info[] = {
 
 static struct i2c_board_info __initdata rt5640_board_info = {
 	I2C_BOARD_INFO("rt5640", 0x1c),
-	.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_CDC_IRQ),
-};
-
-static struct i2c_board_info __initdata rt5639_board_info = {
-	I2C_BOARD_INFO("rt5639", 0x1c),
 	.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_CDC_IRQ),
 };
 
@@ -330,11 +302,8 @@ static void grouper_i2c_init(void)
 
 	i2c_register_board_info(4, &rt5640_board_info, 1);
 
-	i2c_register_board_info(4, cardhu_i2c4_bq27541_board_info,
-		ARRAY_SIZE(cardhu_i2c4_bq27541_board_info));
-
-	i2c_register_board_info(4, grouper_i2c4_max17048_board_info,
-		ARRAY_SIZE(grouper_i2c4_max17048_board_info));
+	i2c_register_board_info(4, grouper_i2c4_bq27541_board_info,
+		ARRAY_SIZE(grouper_i2c4_bq27541_board_info));
 
 	if (project_info == GROUPER_PROJECT_NAKASI_3G) {
 		nfc_pdata.irq_gpio = TEGRA_GPIO_PS7;
