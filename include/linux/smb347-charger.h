@@ -26,7 +26,7 @@
 #include <linux/regulator/machine.h>
 #include <linux/wakelock.h>
 
-#define SMB_DEBUG			0
+#define SMB_DEBUG			1
 #if SMB_DEBUG
 #define SMB_INFO(format, arg...)	\
 	printk(KERN_INFO "smb347_charger: [%s] " format , __FUNCTION__ , ## arg)
